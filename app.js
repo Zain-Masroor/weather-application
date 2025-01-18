@@ -1,53 +1,56 @@
 const express = require('express');
 const axios = require('axios');
-const dotenv = require('dotenv');
 const path = require('path');
+const cors = require('cors');  // Add CORS middleware
 
-dotenv.config();
 const app = express();
+const port = 3000;
 
-// List of major cities
-const cities = [
-    'New York', 'London', 'Paris', 'Tokyo', 'Dubai',
-    'Sydney', 'Berlin', 'Los Angeles', 'Mumbai', 'Toronto'
-];
+// Use CORS to handle cross-origin requests
+app.use(cors());
 
+// Set up EJS as the templating engine
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Serve static files (CSS, JS, images, etc.)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Home route to fetch weather data for major cities
-app.get('/', async (req, res) => {
-    const apiKey = process.env.OPENWEATHERMAP_API_KEY;
-    const weatherData = [];
+// Body parsing middleware
+app.use(express.urlencoded({ extended: true }));
 
-    for (let city of cities) {
-        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
-        try {
-            const response = await axios.get(url);
-            weatherData.push(response.data);
-        } catch (error) {
-            weatherData.push({ name: city, error: 'City not found or API error' });
-        }
-    }
-
-    res.render('index', { weatherData });
+// Route for the homepage
+app.get('/', (req, res) => {
+    res.render('index', { weather: null, error: null });
 });
 
-// New route to handle weather search by city name
-app.get('/weather/:city', async (req, res) => {
-    const cityName = req.params.city;
-    const apiKey = process.env.OPENWEATHERMAP_API_KEY;
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}&units=metric`;
+// Route to handle the search form submission
+app.post('/weather', async (req, res) => {
+    const city = req.body.city;
 
     try {
-        const response = await axios.get(url);
-        res.json(response.data);  // Send the weather data as JSON
+        // Replace with your OpenWeatherMap API key
+        const apiKey = 'dc170de16695f9a1032371cdf0173969';
+        const response = await axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
+
+        const weatherData = response.data;
+        res.render('index', {
+            weather: {
+                city: weatherData.name,
+                temp: weatherData.main.temp,
+                description: weatherData.weather[0].description,
+                humidity: weatherData.main.humidity,
+                wind: weatherData.wind.speed,
+            },
+            error: null
+        });
     } catch (error) {
-        res.json({ error: 'City not found or API error' });
+        console.log(error);
+        res.render('index', { weather: null, error: 'Error fetching weather data.' });
     }
 });
 
-const port = 3000;
+// Start the server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
