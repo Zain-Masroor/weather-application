@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+    <div class="weather-container">
+        <h1>Weather Updates for Major Cities</h1>
+        <div class="weather-cards">
+            <% weatherData.forEach(function(city) { %>
+                <div class="city-weather">
+                    <h2><%= city.name %></h2>
+                    <% if (city.error) { %>
+                        <p>Error: <%= city.error %></p>
+                    <% } else { %>
+                        <p>Temperature: <%= city.main.temp %>°C</p>
+                        <p>Weather: <%= city.weather[0].description %></p>
+                        <p>Humidity: <%= city.main.humidity %>%</p>
+                    <% } %>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+</body>
+</html>
