@@ -4,11 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App</title>
-    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
     <div class="weather-container">
         <h1>Weather Updates for Major Cities</h1>
+        
+        <!-- Search Form -->
+        <div class="search-container">
+            <input type="text" id="city-input" placeholder="Enter city name" />
+            <button id="search-btn">Get Weather</button>
+        </div>
+        
+        <div id="weather-result"></div>
+        
         <div class="weather-cards">
             <% weatherData.forEach(function(city) { %>
                 <div class="city-weather">
@@ -24,5 +33,35 @@
             <% }); %>
         </div>
     </div>
+
+    <script>
+        // Get the elements
+        const searchBtn = document.getElementById('search-btn');
+        const cityInput = document.getElementById('city-input');
+        const weatherResult = document.getElementById('weather-result');
+        
+        searchBtn.addEventListener('click', function() {
+            const cityName = cityInput.value.trim();
+            if (cityName) {
+                fetch(`/weather/${cityName}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            weatherResult.innerHTML = `<p>Error: ${data.error}</p>`;
+                        } else {
+                            weatherResult.innerHTML = `
+                                <h2>${data.name}</h2>
+                                <p>Temperature: ${data.main.temp}°C</p>
+                                <p>Weather: ${data.weather[0].description}</p>
+                                <p>Humidity: ${data.main.humidity}%</p>
+                            `;
+                        }
+                    })
+                    .catch(error => {
+                        weatherResult.innerHTML = `<p>Error fetching data for ${cityName}</p>`;
+                    });
+            }
+        });
+    </script>
 </body>
 </html>
