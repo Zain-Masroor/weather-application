@@ -7,61 +7,31 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <div class="weather-container">
-        <h1>Weather Updates for Major Cities</h1>
-        
-        <!-- Search Form -->
-        <div class="search-container">
-            <input type="text" id="city-input" placeholder="Enter city name" />
-            <button id="search-btn">Get Weather</button>
-        </div>
-        
-        <div id="weather-result"></div>
-        
-        <div class="weather-cards">
-            <% weatherData.forEach(function(city) { %>
-                <div class="city-weather">
-                    <h2><%= city.name %></h2>
-                    <% if (city.error) { %>
-                        <p>Error: <%= city.error %></p>
-                    <% } else { %>
-                        <p>Temperature: <%= city.main.temp %>°C</p>
-                        <p>Weather: <%= city.weather[0].description %></p>
-                        <p>Humidity: <%= city.main.humidity %>%</p>
-                    <% } %>
-                </div>
-            <% }); %>
-        </div>
+
+    <div class="container">
+        <h1>Weather App</h1>
+
+        <form action="/weather" method="POST">
+            <input type="text" name="city" placeholder="Brussels" required>
+            <button type="submit">Search</button>
+        </form>
+
+        <% if (weather) { %>
+            <div class="weather-info">
+                <h2><%= weather.city %></h2>
+                <p>Temperature: <%= weather.temp %>°C</p>
+                <p>Description: <%= weather.description %></p>
+                <p>Humidity: <%= weather.humidity %>%</p>
+                <p>Wind Speed: <%= weather.wind %> m/s</p>
+            </div>
+        <% } %>
+
+        <% if (error) { %>
+            <div class="error">
+                <p><%= error %></p>
+            </div>
+        <% } %>
     </div>
 
-    <script>
-        // Get the elements
-        const searchBtn = document.getElementById('search-btn');
-        const cityInput = document.getElementById('city-input');
-        const weatherResult = document.getElementById('weather-result');
-        
-        searchBtn.addEventListener('click', function() {
-            const cityName = cityInput.value.trim();
-            if (cityName) {
-                fetch(`/weather/${cityName}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            weatherResult.innerHTML = `<p>Error: ${data.error}</p>`;
-                        } else {
-                            weatherResult.innerHTML = `
-                                <h2>${data.name}</h2>
-                                <p>Temperature: ${data.main.temp}°C</p>
-                                <p>Weather: ${data.weather[0].description}</p>
-                                <p>Humidity: ${data.main.humidity}%</p>
-                            `;
-                        }
-                    })
-                    .catch(error => {
-                        weatherResult.innerHTML = `<p>Error fetching data for ${cityName}</p>`;
-                    });
-            }
-        });
-    </script>
 </body>
 </html>
