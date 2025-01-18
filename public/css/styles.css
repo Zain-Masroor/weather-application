@@ -1,0 +1,83 @@
+/* Basic body styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column; /* Make sure everything stacks vertically */
+}
+
+/* Main container to center the content */
+.weather-container {
+    margin-top: 20px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 1200px; /* Limit the width */
+    overflow: hidden; /* Ensure no elements spill outside */
+}
+
+/* Title */
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+/* Flex container to display weather cards in rows */
+.weather-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+/* Weather card styling */
+.city-weather {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    width: 30%;
+    margin: 10px 0;
+    box-sizing: border-box;
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.city-weather:hover {
+    transform: scale(1.05);
+}
+
+/* Weather card title */
+.city-weather h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* Temperature and other details */
+.city-weather p {
+    font-size: 1.1em;
+    color: #555;
+}
+
+/* Responsive styles for mobile (1 column) */
+@media (max-width: 768px) {
+    .city-weather {
+        width: 100%;
+    }
+}
+
+/* Responsive styles for tablets (2 columns) */
+@media (max-width: 1024px) {
+    .city-weather {
+        width: 48%;
+    }
+}
